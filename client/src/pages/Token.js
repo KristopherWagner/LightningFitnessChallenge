@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from 'react-router-dom';
 
 async function getTokens({ code }) {
     const response = await axios.post('https://www.strava.com/oauth/token', {
@@ -8,15 +8,15 @@ async function getTokens({ code }) {
         client_secret: '',
         code,
         grant_type: 'authorization_code',
-    })
+    });
 
     return response.data;
 }
 
 export default function Token() {
     const [params, ] = useSearchParams();
-    const [token, setToken] = useState(null)
-    const code = params.get("code");
+    const [token, setToken] = useState(null);
+    const code = params.get('code');
 
     useEffect(() => {
         const loadTokens = async () => {
@@ -29,6 +29,6 @@ export default function Token() {
             }
         };
         loadTokens();
-    }, [code])
-    return <p>{JSON.stringify(token, 0, 2)}</p>
+    }, [code]);
+    return <p>{JSON.stringify(token, 0, 2)}</p>;
 }
