@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import { LoginButton } from './components';
 
 export default function App() {
   return (
@@ -9,6 +10,7 @@ export default function App() {
         <p>
           This page is a work in progress
         </p>
+        <LoginButton />
       </header>
     </div>
   );
