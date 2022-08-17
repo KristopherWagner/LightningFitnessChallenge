@@ -7,5 +7,5 @@ export default function LoginButton() {
         <a href={url}>
             Click here to authenticate
         </a>
-    )
+    );
 }
