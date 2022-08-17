@@ -22,13 +22,12 @@ export default function Token() {
     const loadTokens = async () => {
       try {
         const response = await getTokens({ code });
-        console.log(response);
         setToken(response);
       } catch(error) {
-        console.error(error);
+        console.error('Unable to get token');
       }
     };
     loadTokens();
   }, [code]);
-  return <p>{JSON.stringify(token, 0, 2)}</p>;
+  return <p role="info">{JSON.stringify(token, 0, 2)}</p>;
 }
