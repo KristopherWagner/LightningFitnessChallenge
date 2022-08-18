@@ -1,4 +1,4 @@
-module github.com/KristopherWagner/LightningFitnessChallenge/packages/register_athlete
+module github.com/KristopherWagner/LightningFitnessChallenge/packages/get_activities
 
 go 1.19
 

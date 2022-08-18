@@ -6,23 +6,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+
+	"github.com/KristopherWagner/LightningFitnessChallenge/packages/types"
 )
 
-type TokenInfo struct {
-	ID           string `json:"id"`
-	AccessToken  string `json:"access_token"`
-	RefreshToken string `json:"refresh_token"`
-	Expires      int    `json:"expires_at"`
-}
-
-func createTokenInfo() (tokenInfo TokenInfo) {
+func createTokenInfo() (tokenInfo types.TokenInfo) {
 	athleteID := flag.String("athlete", "", "ID of Athlete")
 	accessToken := flag.String("token", "", "Access Token from Strava")
 	refreshToken := flag.String("refresh", "", "Refresh Token from Strava")
 	expires := flag.Int("expires", 0, "Epoch timestamp of when the token expires")
 	flag.Parse()
 
-	tokenInfo = TokenInfo{
+	tokenInfo = types.TokenInfo{
 		ID:           *athleteID,
 		AccessToken:  *accessToken,
 		RefreshToken: *refreshToken,
@@ -31,7 +26,7 @@ func createTokenInfo() (tokenInfo TokenInfo) {
 	return
 }
 
-func writeToFile(tokenInfo TokenInfo) (err error) {
+func writeToFile(tokenInfo types.TokenInfo) (err error) {
 	file, err := json.MarshalIndent(tokenInfo, "", "  ")
 	if err != nil {
 		err = fmt.Errorf("unable to Marshal JSON: " + err.Error())
