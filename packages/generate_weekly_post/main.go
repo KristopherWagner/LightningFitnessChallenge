@@ -59,7 +59,7 @@ func GetActivities(accessToken string) (activities []types.SummaryActivity, err 
 	return
 }
 
-func GetAthletes(accessToken string) (athletes []types.SummaryAthlete, err error) {
+func GetAthletes(accessToken string) (athletes []types.Athlete, err error) {
 	url := "https://www.strava.com/api/v3/clubs/502620/members"
 	response, err := makeGetRequest(accessToken, url)
 	if err != nil {
@@ -67,7 +67,7 @@ func GetAthletes(accessToken string) (athletes []types.SummaryAthlete, err error
 		return
 	}
 
-	athletes = make([]types.SummaryAthlete, 0)
+	athletes = make([]types.Athlete, 0)
 	err = json.Unmarshal(response, &athletes)
 	if err != nil {
 		err = fmt.Errorf("unable to unmarshal response: " + err.Error())
@@ -75,7 +75,7 @@ func GetAthletes(accessToken string) (athletes []types.SummaryAthlete, err error
 	return
 }
 
-func getAthlete(accessToken string) (athlete types.SummaryAthlete, err error) {
+func getAthlete(accessToken string) (athlete types.Athlete, err error) {
 	url := "https://www.strava.com/api/v3/athlete"
 	response, err := makeGetRequest(accessToken, url)
 	if err != nil {
@@ -99,4 +99,5 @@ func main() {
 		log.Fatalf(err.Error())
 	}
 	fmt.Println(athlete.FirstName + " " + athlete.LastName)
+	fmt.Printf("%+v\n", athlete)
 }
