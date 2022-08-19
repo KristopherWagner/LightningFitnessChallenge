@@ -1,4 +1,4 @@
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
@@ -10,12 +10,7 @@ jest.mock('react-router-dom', () => ({
   }])
 }));
 
-const server = setupServer(
-  rest.post('https://www.strava.com/oauth/token', (req, res, ctx) => {
-    return res(ctx.json({ data: '' }));
-  }),
-);
-
+const server = setupServer();
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
@@ -29,9 +24,18 @@ test('handles server error', async () => {
       )
     )),
   );
-  render(<Login />);
+  await act(async () => {
+    await render(<Login />);
+  });
 });
 
 test('handles getting a token', async () => {
-  render(<Login />);
+  server.use(
+    rest.post('https://www.strava.com/oauth/token', (req, res, ctx) => (
+      res(ctx.status(200), ctx.json({ athlete: {} }))
+    )),
+  );
+  await act(async () => {
+    await render(<Login />);
+  });
 });

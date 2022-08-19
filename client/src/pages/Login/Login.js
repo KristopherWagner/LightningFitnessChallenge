@@ -1,33 +1,72 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useSearchParams } from 'react-router-dom';
 
-async function getTokens({ code }) {
-  const response = await axios.post('https://www.strava.com/oauth/token', {
-    client_id: 45959,
-    client_secret: '',
-    code,
-    grant_type: 'authorization_code',
-  });
+import Alert from '@mui/material/Alert';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader  from '@mui/material/CardHeader';
+import CircularProgress from '@mui/material/CircularProgress';
+import Snackbar from '@mui/material/Snackbar';
+import Typography from '@mui/material/Typography';
 
-  return response.data;
-}
+import getTokens from './getTokens';
 
 export default function Login() {
   const [params, ] = useSearchParams();
   const [token, setToken] = useState(null);
-  const code = params.get('code');
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
+  const closeSnackbar = () => setIsSnackbarOpen(false);
 
   useEffect(() => {
+    const code = params.get('code');
     const loadTokens = async () => {
       try {
         const response = await getTokens({ code });
         setToken(response);
       } catch(error) {
-        console.error('Unable to get token');
+        setIsSnackbarOpen(true);
       }
     };
     loadTokens();
-  }, [code]);
-  return <p role="info">{JSON.stringify(token, 0, 2)}</p>;
+  }, []);
+
+  return (
+    <Box sx={{
+      display: 'flex',
+      justifyContent: 'space-around',
+      margin: '24px auto',
+      maxWidth: '80vw',
+    }}>
+      {token == null ? (
+        <CircularProgress />
+      ) : (
+        <Card>
+          <CardHeader title='Your token' />
+          <CardContent>
+            <Typography role="info">
+              {`Access: ${token.access_token}`}
+            </Typography>
+            <Typography role="info">
+              {`Expires: ${token.expires_at}`}
+            </Typography>
+            <Typography role="info">
+              {`ID: ${token.athlete.id}`}
+            </Typography>
+            <Typography role="info">
+              {`Refresh: ${token.refresh_token}`}
+            </Typography>
+          </CardContent>
+        </Card>
+      )}
+      <Snackbar
+        autoHideDuration={6000}
+        anchorOrigin={{ horizontal: 'center', vertical: 'bottom' }}
+        open={isSnackbarOpen}
+        onClose={closeSnackbar}
+      >
+        <Alert onClose={closeSnackbar} severity='error'>Unable to get token</Alert>
+      </Snackbar>
+    </Box>
+  );
 }
