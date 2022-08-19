@@ -4,7 +4,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './index.css';
 import App from './App';
-import { Token } from './pages';
+import { Login } from './pages';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -12,7 +12,7 @@ root.render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/exchange_token" element={<Token />} />
+        <Route path="/exchange_token" element={<Login />} />
       </Routes>
     </BrowserRouter>
   </React.StrictMode>

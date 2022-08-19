@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
-import Token from './Token';
+import Login from './Login';
 
 jest.mock('react-router-dom', () => ({
   useSearchParams: () => ([{
@@ -29,9 +29,9 @@ test('handles server error', async () => {
       )
     )),
   );
-  render(<Token />);
+  render(<Login />);
 });
 
 test('handles getting a token', async () => {
-  render(<Token />);
+  render(<Login />);
 });

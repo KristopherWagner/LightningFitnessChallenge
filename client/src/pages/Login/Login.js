@@ -13,7 +13,7 @@ async function getTokens({ code }) {
   return response.data;
 }
 
-export default function Token() {
+export default function Login() {
   const [params, ] = useSearchParams();
   const [token, setToken] = useState(null);
   const code = params.get('code');
