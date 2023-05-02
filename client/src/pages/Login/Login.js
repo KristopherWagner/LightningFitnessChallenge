@@ -5,7 +5,7 @@ import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardHeader  from '@mui/material/CardHeader';
+import CardHeader from '@mui/material/CardHeader';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Typography from '@mui/material/Typography';
@@ -13,23 +13,27 @@ import Typography from '@mui/material/Typography';
 import getTokens from './getTokens';
 
 export default function Login() {
-  const [params, ] = useSearchParams();
+  const [params,] = useSearchParams();
+  const code = params.get('code');
+
   const [token, setToken] = useState(null);
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false);
   const closeSnackbar = () => setIsSnackbarOpen(false);
 
   useEffect(() => {
-    const code = params.get('code');
     const loadTokens = async () => {
       try {
         const response = await getTokens({ code });
         setToken(response);
-      } catch(error) {
+      } catch (error) {
         setIsSnackbarOpen(true);
       }
     };
-    loadTokens();
-  }, []);
+
+    if (typeof (code) === 'string' && code.length > 0) {
+      loadTokens();
+    }
+  }, [code]);
 
   return (
     <Box sx={{
