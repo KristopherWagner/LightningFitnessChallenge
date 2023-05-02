@@ -6,13 +6,15 @@ import (
 	"io"
 	"net/http"
 	"net/url"
+
+	"github.com/KristopherWagner/LightningFitnessChallenge/packages/types"
 )
 
 type ExpectedFormat struct {
 	Code string `json:"code"`
 }
 
-func getTokenFromStrava(clientSecret, code string) (err error) {
+func getTokenFromStrava(clientSecret, code string) (tokenInfo types.OauthToken, err error) {
 	fmt.Println(code)
 	response, err := http.PostForm("https://www.strava.com/oauth/token", url.Values{
 		"client_id":     {"45959"},
@@ -21,13 +23,21 @@ func getTokenFromStrava(clientSecret, code string) (err error) {
 		"grant_type":    {"authorization_code"},
 	})
 	if err != nil {
-		err = fmt.Errorf("unable to make request: %v", err)
+		err = fmt.Errorf("unable to make request: %w", err)
 		return
 	}
 
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
-	fmt.Println(string(body))
+	if err != nil {
+		err = fmt.Errorf("unable to read body: %w", err)
+		return
+	}
+
+	err = json.Unmarshal(body, &tokenInfo)
+	if err != nil {
+		err = fmt.Errorf("unable to unmarshall body: %w", err)
+	}
 	return
 }
 
@@ -46,7 +56,7 @@ func handlePOSTToken(w http.ResponseWriter, req *http.Request) {
 
 	body, err := io.ReadAll(req.Body)
 	if err != nil {
-		err = fmt.Errorf("unable to read body: %v", err)
+		err = fmt.Errorf("unable to read body: %w", err)
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
@@ -67,11 +77,15 @@ func handlePOSTToken(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO: Get secret from environment
-	err = getTokenFromStrava("", code)
+	tokenInfo, err := getTokenFromStrava("20c932b43a74a36cf0ef9f8a736c3646468217fa", code)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(tokenInfo)
+	return
 }
 
 func main() {
